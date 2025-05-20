@@ -19,7 +19,7 @@ typedef struct
 
 void leString(char texto[], int tam)
 {
-    fgets(texto[],21,stdin);
+    fgets(texto,21,stdin);
     texto[strcspn(texto,"\n")] = '\0';
     setbuf(stdin,NULL);
 
