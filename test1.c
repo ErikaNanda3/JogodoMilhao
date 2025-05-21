@@ -3,7 +3,7 @@
 #include <string.h>
 /*Para gerenciar uma coleção de perguntas para o jogo, defina uma estrutura Pergunta
 contendo, no mínimo: enunciado (texto), 4 alternativas (texto), letra da alternativa
-correta(char), nível de dificuldade. O sistema deverá permitir cadastrar (inserir/ perguntasDoJogor/
+correta(char), nível de dificuldade. O sistema deverá permitir cadastrar (inserir/ Listar/
 pesquisar/ alterar/ excluir) as perguntas disponíveis. Essa relação deve aumentar e
 diminuir dinamicamen*/
 
