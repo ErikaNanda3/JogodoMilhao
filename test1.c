@@ -53,7 +53,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
     
     
         perguntasDoJogo[*totalPeguntas] = nova;
-        (*totalPeguntas++);
+        (*totalPeguntas)++;
 
         return perguntasDoJogo;
 
