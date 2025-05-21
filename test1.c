@@ -3,14 +3,14 @@
 #include <string.h>
 /*Para gerenciar uma coleção de perguntas para o jogo, defina uma estrutura Pergunta
 contendo, no mínimo: enunciado (texto), 4 alternativas (texto), letra da alternativa
-correta(char), nível de dificuldade. O sistema deverá permitir cadastrar (inserir/ listar/
+correta(char), nível de dificuldade. O sistema deverá permitir cadastrar (inserir/ perguntasDoJogor/
 pesquisar/ alterar/ excluir) as perguntas disponíveis. Essa relação deve aumentar e
 diminuir dinamicamen*/
 
 typedef struct 
 {
     char enunciado[71];
-    char alternativa_escrita[4][21];
+    char alternativa_escrita[4][21];///sao 4 opçoes e cada opçao tem 21 caracteres
     char alternativa_correta;
     char nivel_dificuldade[21];
 
@@ -19,49 +19,76 @@ typedef struct
 
 void leString(char texto[], int tam)
 {
-    fgets(texto,21,stdin);
+    fgets(texto,tam,stdin);
     texto[strcspn(texto,"\n")] = '\0';
     setbuf(stdin,NULL);
-
+    return;
 }
-Pergunta* inserePergunta(Pergunta* lista, int *totalPergunta ){
 
+
+Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
+{
     Pergunta nova;
-
     printf("Digite o enunciado da pergunta: \n");
-    leString(lista->enunciado,71);
+    leString(nova.enunciado,71);
 
-
-    for (int i = 0; i < 4; i++)//sao 4 opções de alternativa 
+    for (int i = 0; i < 4; i++)
     {
-        printf("Digite a alternativa %c:" ,'A'+ i);//recebe a alternativa e armazena entre as 4 
-        leString(nova.alternativa_escrita,21);
-
+        printf("Digite a alternativa %c: " ,'A' + i);//A+i transforma A em 0,1,2,3
+        leString(nova.alternativa_escrita[i],21);
     }
-    
-    printf("Digite a alternativa correta: (A, B, C ou D)\n");
-    scanf("%c",nova.alternativa_correta);
+    printf("Digite a alternativa correta: \n");
+    scanf("%c",&nova.alternativa_correta);
     getchar();
 
-    printf("Digite o nivel de dificuldade: (muito dificil, dificil, medio, facil, muito facil)\n");
-    leString(nova.nivel_dificuldade,sizeof(nova.nivel_dificuldade));
+    printf("Digite o nivel de dificuldade da sua pergunta: \n");
+    leString(nova.nivel_dificuldade,21);
 
-    lista = realloc(lista,(*totalPergunta + 1) * sizeof(Pergunta));
-     if (lista == NULL) {
-        printf("Erro ao alocar memória!\n");
+    perguntasDoJogo  = realloc(perguntasDoJogo, (*totalPeguntas + 1) * sizeof(Pergunta));
+    if (perguntasDoJogo == NULL)
+    {
+        printf("Erro ao realocar a memoria ");
         exit(1);
     }
+    
+    
+        perguntasDoJogo[*totalPeguntas] = nova;
+        (*totalPeguntas++);
 
-    lista[*totalPergunta] = nova;
-    (*totalPergunta)++;
+        return perguntasDoJogo;
 
-    printf("Pergunta inserida");
-   return lista;
 
 }
+
+
+
 int main(){
-    Pergunta* lista = NULL;//incializa com vetor nulo 
-    int totalPergunta = 0;
+    Pergunta* perguntasDoJogo = NULL;//incializa com vetor nulo 
+    int totalPergunta = 0;//contador de perguntas
+
+    int opcao;
+    do
+    {
+        printf(" 1 - Inserir pergunta \n");
+        printf(" 2 - Listar Perguntas  \n");
+        printf(" 0 - Sair \n");
+        scanf("%d",&opcao);
+        getchar();
+
+        switch (opcao)
+        {
+        case 1:
+            perguntasDoJogo = inserirPergunta(perguntasDoJogo,&totalPergunta);
+            break;
+        case 2:
+
+            break;
+        default:
+            break;
+        }
+    } while (opcao != 0 );
+
+    free(perguntasDoJogo);
 
     return 0;
 }
