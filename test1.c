@@ -15,7 +15,7 @@ typedef struct
     char nivel_dificuldade[21];
 
     
-}Pergunta;
+}Pergunta;//Pergunta
 
 void leString(char texto[], int tam)
 {
@@ -23,13 +23,13 @@ void leString(char texto[], int tam)
     texto[strcspn(texto,"\n")] = '\0';
     setbuf(stdin,NULL);
     return;
-}
+}//leString
 
 
-Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
+Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorna ponteiro para Pergunta
 {
     Pergunta nova;
-   
+    
     printf("Digite o enunciado da pergunta: \n");
     leString(nova.enunciado, sizeof(nova.enunciado));
 
@@ -37,7 +37,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
     {
         printf("Digite a alternativa %c: " ,'A' + i);//A+i transforma A em 0,1,2,3
         leString(nova.alternativa_escrita[i],sizeof(nova.alternativa_escrita[i]));
-    }
+    }//for
     printf("Digite a alternativa correta: \n");
     scanf("%c",&nova.alternativa_correta);
     getchar();
@@ -50,7 +50,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
     {
         printf("Erro ao realocar a memoria ");
         exit(1);
-    }
+    }//if
     
     
         perguntasDoJogo[*totalPeguntas] = nova;
@@ -59,7 +59,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
         return perguntasDoJogo;
 
 
-}
+}//inserePergunta
 
 void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
 {
@@ -74,7 +74,7 @@ void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
     for (int i = 0; i < totalPerguntasCad; i++)
     {
        printf("Pergunta %d : \n",i + 1);
-       printf("Enunciado: %s",perguntas[i].enunciado);
+       printf("Enunciado: %s\n",perguntas[i].enunciado);
 
        for (int j = 0; j < 4; j++)
        {
@@ -90,7 +90,51 @@ void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
     return;
 
 
-}
+}//listaPergunta
+
+Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
+{
+
+    int indiceAlterado;
+
+    if (totalPeguntas == 0)
+    {
+        printf("Nao existem perguntas para serem alteradas \n");
+        return perguntasDoJogo;
+    }
+    
+    printf("Alterar Pergunta: \n");
+    printf("Digite o numero da pergunta que deseja alterar (1 a %d)",totalPeguntas);
+    scanf("%d",&indiceAlterado);
+
+    if (indiceAlterado < 1 || indiceAlterado > totalPeguntas)
+    {
+        printf("Numero de pergunta invalido, por favor tente novamente. \n");
+        return perguntasDoJogo;        
+    }
+    
+    printf("Alterando a Pergunta %d: \n",indiceAlterado);
+    printf("Enunciado atual: %s\n",perguntasDoJogo[indiceAlterado - 1].enunciado);
+
+    printf("Digite o Novo enunciado: \n");
+    leString(perguntasDoJogo[indiceAlterado - 1].enunciado,sizeof(perguntasDoJogo[indiceAlterado - 1]));
+     for (int i = 0; i < 4; i++)
+    {
+        printf("Digite a Nova alternativa %c: ", 'A' + i);
+        leString(perguntasDoJogo[indiceAlterado - 1].alternativa_escrita[i], sizeof(perguntasDoJogo[indiceAlterado - 1].alternativa_escrita[i]));
+    }
+
+    printf("Digite a Nova alternativa correta (A, B, C ou D): \n");
+    scanf(" %c", &perguntasDoJogo[indiceAlterado - 1].alternativa_correta);
+    setbuf(stdin, NULL); // Limpar o buffer após scanf
+
+    printf("Digite o Novo nivel de dificuldade da pergunta: \n");
+    leString(perguntasDoJogo[indiceAlterado - 1].nivel_dificuldade, sizeof(perguntasDoJogo[indiceAlterado - 1].nivel_dificuldade));
+
+    printf("Pergunta %d alterada com sucesso!\n", indiceAlterado);
+    return perguntasDoJogo;
+} // alteraPergunta
+
 
 int main(){
    Pergunta* perguntasDoJogo = (Pergunta*) malloc (50 *sizeof(Pergunta));
@@ -98,16 +142,15 @@ int main(){
     {
         printf("Erro ao alocar memoria\n");
         exit(1);
-    }
-    
-
+    }//if
     int totalPergunta = 0;//contador de perguntas
-
+    
     int opcao;
     do
     {
-        printf(" 1 - Inserir pergunta \n");
+        printf(" 1 - Inserir Pergunta \n");
         printf(" 2 - Listar Perguntas  \n");
+        printf(" 3 - Alterar Pergunta \n" );
         printf(" 0 - Sair \n");
         printf("Escolha uma opcao: \n");
         scanf("%d",&opcao);
@@ -121,13 +164,16 @@ int main(){
         case 2:
             listaPerguntas(perguntasDoJogo,totalPergunta);
             break;
+        case 3: 
+            break;
         case 0:
             printf("Saindo do Jogo...\n");
             break;
         default:printf("Opcao invalida, tente novamente !\n");
             break;
-        }
-    } while (opcao != 0 );
+        }//switch
+    }//do 
+    while (opcao != 0 );
 
     free(perguntasDoJogo);
 
