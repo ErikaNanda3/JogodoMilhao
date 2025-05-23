@@ -165,6 +165,7 @@ int main(){
             listaPerguntas(perguntasDoJogo,totalPergunta);
             break;
         case 3: 
+            alteraPergunta(perguntasDoJogo,totalPergunta);
             break;
         case 0:
             printf("Saindo do Jogo...\n");
