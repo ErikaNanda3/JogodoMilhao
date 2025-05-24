@@ -6,13 +6,13 @@ contendo, no mínimo: enunciado (texto), 4 alternativas (texto), letra da altern
 correta(char), nível de dificuldade. O sistema deverá permitir cadastrar (inserir/ Listar/
 pesquisar/ alterar/ excluir) as perguntas disponíveis. Essa relação deve aumentar e
 diminuir dinamicamen*/
-
+typedef enum {MUITOFACIL = 1, FACIL, MEDIO, DIFICIL, MUITODIFICIL}Dificuldade;
 typedef struct 
 {
     char enunciado[71];
     char alternativa_escrita[4][21];///sao 4 opçoes e cada opçao tem 21 caracteres
     char alternativa_correta;
-    char nivel_dificuldade[21];
+    Dificuldade nivel_dificuldade;
 
     
 }Pergunta;//Pergunta
@@ -29,21 +29,34 @@ void leString(char texto[], int tam)
 Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorna ponteiro para Pergunta
 {
     Pergunta nova;
-    
+    int nivel_dif_temp;
+
     printf("Digite o enunciado da pergunta: \n");
     leString(nova.enunciado, sizeof(nova.enunciado));
 
     for (int i = 0; i < 4; i++)
     {
         printf("Digite a alternativa %c: " ,'A' + i);//A+i transforma A em 0,1,2,3
-        leString(nova.alternativa_escrita[i],sizeof(nova.alternativa_escrita[i]));
+        leString(nova.alternativa_escrita[i],strlen(nova.alternativa_escrita[i]));
     }//for
     printf("Digite a alternativa correta: \n");
     scanf("%c",&nova.alternativa_correta);
     getchar();
 
-    printf("Digite o nivel de dificuldade da sua pergunta: \n");
-    leString(nova.nivel_dificuldade,sizeof(nova.nivel_dificuldade));
+    printf("Digite o nivel de dificuldade da sua pergunta:(1 a 5, sendo 1 muito facil, 2 facil,...) \n");
+    printf("Escolha uma opcao de 1 a 5: \n");
+    scanf("%d",&nivel_dif_temp);
+
+    if (nivel_dif_temp >= 1 && nivel_dif_temp <= 5)
+    { 
+        nova.nivel_dificuldade = nivel_dif_temp;
+    } 
+        
+    else {
+        printf("Nivel de dificuldade invalido. Definido como 3 (MEDIO) por padrao.\n");
+        nova.nivel_dificuldade = 3;//caso de erro ele entra no nivel 3 
+    }
+    
 
     perguntasDoJogo  = realloc(perguntasDoJogo, (*totalPeguntas + 1) * sizeof(Pergunta));
     if (perguntasDoJogo == NULL)
@@ -63,7 +76,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorn
 
 void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
 {
-
+    
 
     if (totalPerguntasCad == 0)
     {
@@ -83,7 +96,7 @@ void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
        }
     
        printf("A alternativa correta e: %c\n",perguntas[i].alternativa_correta);
-       printf("Nivel de dificuldade da pergunta: %s",perguntas[i].nivel_dificuldade);
+       printf("Nivel de dificuldade da pergunta: %d",perguntas[i].nivel_dificuldade);
 
     }
     
@@ -94,6 +107,7 @@ void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
 
 Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
 {
+    int nivel_dif_temp;
 
     int indiceAlterado;
 
@@ -128,8 +142,19 @@ Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
     scanf(" %c", &perguntasDoJogo[indiceAlterado - 1].alternativa_correta);
     setbuf(stdin, NULL); // Limpar o buffer após scanf
 
-    printf("Digite o Novo nivel de dificuldade da pergunta: \n");
-    leString(perguntasDoJogo[indiceAlterado - 1].nivel_dificuldade, sizeof(perguntasDoJogo[indiceAlterado - 1].nivel_dificuldade));
+     printf("Digite o NOVO nivel de dificuldade da pergunta (1 a 5, onde 1=MUITO FACIL, 5=MUITO DIFICIL): \n");
+    printf("Escolha uma opcao (1-5): ");
+    scanf("%d", &nivel_dif_temp);
+    if (nivel_dif_temp >= 1 && nivel_dif_temp <= 5) 
+    {
+        perguntasDoJogo[indiceAlterado - 1].nivel_dificuldade = nivel_dif_temp;
+    } 
+    else
+    {
+        printf("Nivel de dificuldade invalido. Mantido o nivel anterior ou 3 (MEDIO) se nao houver.\n");
+        perguntasDoJogo[indiceAlterado - 1].nivel_dificuldade = 3;
+    }
+   
 
     printf("Pergunta %d alterada com sucesso!\n", indiceAlterado);
     return perguntasDoJogo;
@@ -151,6 +176,7 @@ int main(){
         printf(" 1 - Inserir Pergunta \n");
         printf(" 2 - Listar Perguntas  \n");
         printf(" 3 - Alterar Pergunta \n" );
+        printf(" 5 - Apagar Pergunta \n" );
         printf(" 0 - Sair \n");
         printf("Escolha uma opcao: \n");
         scanf("%d",&opcao);
@@ -167,6 +193,8 @@ int main(){
         case 3: 
             alteraPergunta(perguntasDoJogo,totalPergunta);
             break;
+        case 5:
+            break;    
         case 0:
             printf("Saindo do Jogo...\n");
             break;
