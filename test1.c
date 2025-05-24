@@ -26,22 +26,22 @@ void leString(char texto[], int tam)
 }//leString
 
 
-Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorna ponteiro para Pergunta
+Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPerguntas)//retorna ponteiro para Pergunta
 {
     Pergunta nova;
     int nivel_dif_temp;
 
     printf("Digite o enunciado da pergunta: \n");
-    leString(nova.enunciado, strlen(nova.enunciado));
+    leString(nova.enunciado, sizeof(nova.enunciado));
 
     for (int i = 0; i < 4; i++)
     {
         printf("Digite a alternativa %c: " ,'A' + i);//A+i transforma A em 0,1,2,3
-        leString(nova.alternativa_escrita[i],strlen(nova.alternativa_escrita[i]));
+        leString(nova.alternativa_escrita[i],sizeof(nova.alternativa_escrita[i]));
     }//for
     printf("Digite a alternativa correta: \n");
     scanf("%c",&nova.alternativa_correta);
-    getchar();
+    setbuf(stdin,NULL);
 
     printf("Digite o nivel de dificuldade da sua pergunta:(1 a 5, sendo 1 muito facil, 2 facil,...) \n");
     printf("Escolha uma opcao de 1 a 5: \n");
@@ -58,7 +58,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorn
     }
     
 
-    perguntasDoJogo  = realloc(perguntasDoJogo, (*totalPeguntas + 1) * sizeof(Pergunta));
+    perguntasDoJogo  = realloc(perguntasDoJogo, (*totalPerguntas + 1) * sizeof(Pergunta));
     if (perguntasDoJogo == NULL)
     {
         perror("Erro ao realocar a memoria ");
@@ -66,8 +66,8 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorn
     }//if
     
     
-        perguntasDoJogo[*totalPeguntas] = nova;
-        (*totalPeguntas)++;
+        perguntasDoJogo[*totalPerguntas] = nova;
+        (*totalPerguntas)++;
 
         return perguntasDoJogo;
 
@@ -105,23 +105,23 @@ void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
 
 }//listaPergunta
 
-Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
+Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPerguntas)
 {
     int nivel_dif_temp;
 
     int indiceAlterado;
 
-    if (totalPeguntas == 0)
+    if (totalPerguntas == 0)
     {
         printf("Nao existem perguntas para serem alteradas \n");
         return perguntasDoJogo;
     }
     
     printf("Alterar Pergunta: \n");
-    printf("Digite o numero da pergunta que deseja alterar (1 a %d)",totalPeguntas);
+    printf("Digite o numero da pergunta que deseja alterar (1 a %d)",*totalPerguntas);
     scanf("%d",&indiceAlterado);
 
-    if (indiceAlterado < 1 || indiceAlterado > totalPeguntas)
+    if (indiceAlterado < 1 || indiceAlterado > *totalPerguntas)
     {
         perror("Numero de pergunta invalido, por favor tente novamente. \n");
         return perguntasDoJogo;        
@@ -159,56 +159,60 @@ Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
     printf("Pergunta %d alterada com sucesso!\n", indiceAlterado);
     return perguntasDoJogo;
 } // alteraPergunta
-Pergunta* excluiPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas){
-
+Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas) // totalPeguntas é ponteiro
+{
     int indice_exclui;
 
-    if (*totalPeguntas == 0)
+    if (*totalPeguntas == 0) 
     {
-       printf("Nao existem perguntas para serem excluidas\n");
-       return perguntasDoJogo;
+        printf("Nao existem perguntas para serem excluidas.\n");
+        return perguntasDoJogo;
     }
-    
-    printf("Digite o numero da pergunta que deseja excluir (1 a %d): ", *totalPeguntas);
-    scanf("%d", &indice_exclui);
 
-    if (indice_exclui < 1 || indice_exclui > totalPeguntas)
+    printf("\n--- Excluir Pergunta ---\n");
+    printf("Digite o numero da pergunta que deseja excluir (1 a %d): ", *totalPeguntas); // Desreferenciar totalPeguntas
+    scanf("%d", &indice_exclui);
+    setbuf(stdin,NULL);
+
+    
+    if (indice_exclui < 1 || indice_exclui > *totalPeguntas)
     {
         printf("Numero da pergunta invalido, tente novamente.\n");
-        return perguntasDoJogo; 
+        return perguntasDoJogo;
     }
-    
-    for (int i = indice_exclui - 1; i < (*totalPeguntas - 1); i++)//move todo mundo 1 pra tras
+
+    // Move os elementos posteriores uma posição para trás
+    for (int i = indice_exclui - 1; i < (*totalPeguntas - 1); i++)
     {
-        perguntasDoJogo[i] = perguntasDoJogo[i + 1]
+        perguntasDoJogo[i] = perguntasDoJogo[i + 1];
     }
-    (*totalPeguntas)--;//diminui o contador de perguntas menos 1
+    (*totalPeguntas)--; // Diminui o contador de perguntas
 
     if (*totalPeguntas == 0)
     {
         free(perguntasDoJogo);
-        perguntasDoJogo = NULL; 
+        perguntasDoJogo = NULL;
+        printf("Pergunta %d excluida com sucesso! Todas as perguntas foram removidas.\n", indice_exclui);
+        return perguntasDoJogo; 
     }
     else
     {
-
-        Pergunta* temporario = (Pergunta*) realloc(perguntasDoJogo,(*totalPeguntas) *  sizeof(Pergunta));
+        Pergunta* temporario = (Pergunta*) realloc(perguntasDoJogo, (*totalPeguntas) * sizeof(Pergunta));
         if (temporario == NULL)
         {
-            perror("Erro ao realocar memoria \n");
+            printf("Erro ao realocar memoria após exclusao! \n");
+           
+            return perguntasDoJogo;
         }
         else
         {
-
             perguntasDoJogo = temporario;
         }
-
-        printf("Pergunta %d excluida com sucesso\n",indice_exclui);
+        printf("Pergunta %d excluida com sucesso!\n", indice_exclui);
         return perguntasDoJogo;
     }
-
-    return 
 }
+
 
 int main(){
    Pergunta* perguntasDoJogo = (Pergunta*) malloc (50 *sizeof(Pergunta));
@@ -240,10 +244,10 @@ int main(){
             listaPerguntas(perguntasDoJogo,totalPergunta);
             break;
         case 3: 
-            alteraPergunta(perguntasDoJogo,totalPergunta);
+            alteraPergunta(perguntasDoJogo,&totalPergunta);
             break;
         case 5:
-            perguntasDoJogo = excluirPergunta(perguntasDoJogo, &totalPergunta);
+           excluirPergunta(perguntasDoJogo, &totalPergunta);
             break;    
         case 0:
             printf("Saindo do Jogo...\n");
