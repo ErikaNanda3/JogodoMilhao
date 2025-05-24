@@ -32,7 +32,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorn
     int nivel_dif_temp;
 
     printf("Digite o enunciado da pergunta: \n");
-    leString(nova.enunciado, sizeof(nova.enunciado));
+    leString(nova.enunciado, strlen(nova.enunciado));
 
     for (int i = 0; i < 4; i++)
     {
@@ -61,7 +61,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)//retorn
     perguntasDoJogo  = realloc(perguntasDoJogo, (*totalPeguntas + 1) * sizeof(Pergunta));
     if (perguntasDoJogo == NULL)
     {
-        printf("Erro ao realocar a memoria ");
+        perror("Erro ao realocar a memoria ");
         exit(1);
     }//if
     
@@ -80,7 +80,7 @@ void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad)
 
     if (totalPerguntasCad == 0)
     {
-       printf("Nenhuma pergunta cadastrada\n");
+       perror("Nenhuma pergunta cadastrada\n");
        return;
     }
     printf("Lista Perguntas Cadastradas (%d): \n",totalPerguntasCad);
@@ -123,7 +123,7 @@ Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
 
     if (indiceAlterado < 1 || indiceAlterado > totalPeguntas)
     {
-        printf("Numero de pergunta invalido, por favor tente novamente. \n");
+        perror("Numero de pergunta invalido, por favor tente novamente. \n");
         return perguntasDoJogo;        
     }
     
@@ -159,13 +159,62 @@ Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas)
     printf("Pergunta %d alterada com sucesso!\n", indiceAlterado);
     return perguntasDoJogo;
 } // alteraPergunta
+Pergunta* excluiPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas){
 
+    int indice_exclui;
+
+    if (*totalPeguntas == 0)
+    {
+       printf("Nao existem perguntas para serem excluidas\n");
+       return perguntasDoJogo;
+    }
+    
+    printf("Digite o numero da pergunta que deseja excluir (1 a %d): ", *totalPeguntas);
+    scanf("%d", &indice_exclui);
+
+    if (indice_exclui < 1 || indice_exclui > totalPeguntas)
+    {
+        printf("Numero da pergunta invalido, tente novamente.\n");
+        return perguntasDoJogo; 
+    }
+    
+    for (int i = indice_exclui - 1; i < (*totalPeguntas - 1); i++)//move todo mundo 1 pra tras
+    {
+        perguntasDoJogo[i] = perguntasDoJogo[i + 1]
+    }
+    (*totalPeguntas)--;//diminui o contador de perguntas menos 1
+
+    if (*totalPeguntas == 0)
+    {
+        free(perguntasDoJogo);
+        perguntasDoJogo = NULL; 
+    }
+    else
+    {
+
+        Pergunta* temporario = (Pergunta*) realloc(perguntasDoJogo,(*totalPeguntas) *  sizeof(Pergunta));
+        if (temporario == NULL)
+        {
+            perror("Erro ao realocar memoria \n");
+        }
+        else
+        {
+
+            perguntasDoJogo = temporario;
+        }
+
+        printf("Pergunta %d excluida com sucesso\n",indice_exclui);
+        return perguntasDoJogo;
+    }
+
+    return 
+}
 
 int main(){
    Pergunta* perguntasDoJogo = (Pergunta*) malloc (50 *sizeof(Pergunta));
     if (perguntasDoJogo == NULL)
     {
-        printf("Erro ao alocar memoria\n");
+        perror("Erro ao alocar memoria\n");
         exit(1);
     }//if
     int totalPergunta = 0;//contador de perguntas
@@ -194,11 +243,12 @@ int main(){
             alteraPergunta(perguntasDoJogo,totalPergunta);
             break;
         case 5:
+            perguntasDoJogo = excluirPergunta(perguntasDoJogo, &totalPergunta);
             break;    
         case 0:
             printf("Saindo do Jogo...\n");
             break;
-        default:printf("Opcao invalida, tente novamente !\n");
+        default:perror("Opcao invalida, tente novamente !\n");
             break;
         }//switch
     }//do 
