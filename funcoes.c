@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h> // Para usar toupper
 #include "funcoes.h"
 
 
@@ -223,7 +224,7 @@ Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas) // tota
             
             perguntasDoJogo = temporario;
         }
-
+        
         printf("Pergunta %d excluida com sucesso!\n", indice_exclui);
         
         return perguntasDoJogo;
@@ -237,10 +238,7 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
         printf("Nenhuma pergunta cadastrada para jogar.\n");
         return perguntasDoJogo;
     }
-
-    // Implementar a lógica do jogo aqui
-    // Exemplo: fazer perguntas e verificar respostas
-
+    
     return perguntasDoJogo;
 }
 
@@ -377,7 +375,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
     return perguntas;
 } // carregarPerguntasDoCSV
 
-Pergunta* carregarPerguntasBinario(const char* nome_arquivo, int* total_perguntas) {
+Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
     
     int contador_lido = 0;
     
@@ -438,7 +436,7 @@ Pergunta* carregarPerguntasBinario(const char* nome_arquivo, int* total_pergunta
 
 } // carregarPerguntasBinario
 
-void salvarPerguntasBinario(const char* nome_arquivo, Pergunta* perguntas, int total_perguntas) {
+void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, int total_perguntas) {
 
     FILE *arquivo = fopen(nome_arquivo, "wb"); // "wb" cria ou sobrescreve
 
