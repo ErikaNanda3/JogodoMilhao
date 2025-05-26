@@ -73,6 +73,10 @@ int main(){
            excluirPergunta(perguntasDoJogo, &totalPergunta);
             break;    
         case 6:
+         printf("Quem quer ser um milionario?\n");
+            printf("Vamos jogar!\n");
+            printf("O jogo comeca na dificuldade mais facil, e quando voce errar alguma das perguntas o jogo diminuira a dificuldade.\n");
+            printf("Boa sorte!\n");
             jogar(perguntasDoJogo,totalPergunta);
             break;
         case 0:
