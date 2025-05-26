@@ -230,17 +230,121 @@ Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas) // tota
         return perguntasDoJogo;
     }//fecha else
 }
-
-Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
+int random(Pergunta* perguntasDoJogo, int* totalPerguntas,  int level){
+    int i;
+    do{
+    i = rand() % *totalPerguntas;
+    }while(perguntasDoJogo[i].nivel_dificuldade != level);
+    return i;
+}//mani q fez e tava dando erro no pc dela
+Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)//mani q fez e deu erro no pc dela
 {
+    int i = 0;
+    int condicao;
+    int level = 0;
+    char resp;
+
     if (totalPerguntas == 0)
     {
         printf("Nenhuma pergunta cadastrada para jogar.\n");
         return perguntasDoJogo;
     }
+    do{
+        level++;
+        switch (level){
+            case MUITOFACIL: 
+                i = random(perguntasDoJogo, totalPerguntas, level);
+                printf("%s", perguntasDoJogo[i].enunciado);  
+                for (int j = 0; j<4; j++){
+                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
+                }
+                printf("Escolha a alternativa correta: ");
+                scanf("%c",&resp);
+
+                if(resp != perguntasDoJogo[i].alternativa_correta){
+                    level = 0;
+                    printf("Voce errou, vamos voltar uma dificuldade!");
+                }
+                printf("Voce acertou, parabens! Proxima pergunta:\n");
+
+            break;
+
+            case FACIL: 
+                i = random(perguntasDoJogo, totalPerguntas, level);
+                printf("%s", perguntasDoJogo[i].enunciado);  
+                for (int j = 0; j<4; j++){
+                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
+                }
+                printf("Escolha a alternativa correta: ");
+                scanf("%c",&resp);
+
+                if(resp != perguntasDoJogo[i].alternativa_correta){
+                    level = 0;
+                    printf("Voce errou, vamos voltar uma dificuldade!");
+                }
+                printf("Voce acertou, parabens! Proxima pergunta:\n");
+
+
+            break;
+
+            case MEDIO: 
+                i = random(perguntasDoJogo, totalPerguntas, level);
+                printf("%s", perguntasDoJogo[i].enunciado);  
+                for (int j = 0; j<4; j++){
+                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
+                }
+                printf("Escolha a alternativa correta: ");
+                scanf("%c",&resp);
+
+                if(resp != perguntasDoJogo[i].alternativa_correta){
+                    level = 1;
+                    printf("Voce errou, vamos voltar uma dificuldade!");
+                }
+                printf("Voce acertou, parabens! Proxima pergunta:\n");
+
+            break;
+
+            case DIFICIL: 
+                i = random(perguntasDoJogo, totalPerguntas, level);
+                printf("%s", perguntasDoJogo[i].enunciado);  
+                for (int j = 0; j<4; j++){
+                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
+                }
+                printf("Escolha a alternativa correta: ");
+                scanf("%c",&resp);
+
+                if(resp != perguntasDoJogo[i].alternativa_correta){
+                    level = 2;
+                    printf("Voce errou, vamos voltar uma dificuldade!");
+                }
+                printf("Voce acertou, parabens! Proxima pergunta:\n");
+
+            break;
+
+            case MUITODIFICIL: 
+                i = random(perguntasDoJogo, totalPerguntas, level);
+                printf("%s", perguntasDoJogo[i].enunciado);  
+                for (int j = 0; j<4; j++){
+                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
+                }
+                printf("Escolha a alternativa correta: ");
+                scanf("%c",&resp);
+
+                if(resp != perguntasDoJogo[i].alternativa_correta){
+                    level = 3;
+                    printf("Voce errou, vamos voltar uma dificuldade!");
+                }
+                printf("Voce acertou, parabens! Agora voce eh um milionario!\n");
+
+                condicao = 1;
+            break;
+
+        }
+    }while(condicao == 0);
     
     return perguntasDoJogo;
 }
+  
 
 Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
    
