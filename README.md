@@ -1,5 +1,5 @@
-# raylibGames
-Alguns exemplos de jogos simples utilizando a bibloteca RayLib e a linguagem Ansi C
+#Jogo do Milhão 
+
 
 
 ---
