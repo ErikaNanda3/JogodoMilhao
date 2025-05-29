@@ -1,4 +1,4 @@
-##Jogo do Milhão
+## Jogo do Milhão (Tema: História da Mulher na Computação)
 
 ## Participantes:
 
@@ -12,7 +12,13 @@
 
     (Colocar como fazer o programa rodar)
 
-    A biblioteca funcoes.h é onde estão as funções utilidas para o menu funcionar
+    A biblioteca funcoes.h é onde estão as funções utilizadas para o menu funcionar
+
+    o menuprincipal.c é onde está o menu
+
+    as funcoes.c é onde estão as funções com seu código completo
+
+    questoesJogoDoMilhao.csv é o arquivo csv onde estão armazenadas as perguntas
 
     (O arquivo teste1.c é apenas o arquivo original com as funções de cadastro, sem a parte de arquivos)
 
