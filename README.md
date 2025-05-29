@@ -4,9 +4,9 @@
 
     Érika Fernanda Santos De Souza R.A.: 2478382
 
-    Mayane Rye Aomoto Loaoka R.A.: 2270862
+    Mayane Rye Aomoto Ioaoka R.A.: 2270862
 
-    Amani Moreira Das Neves   R.A.: 2270633
+    Amani Moreira Das Neves  R.A.: 2270633
 
 ## Como fazer o programa rodar: 
 
