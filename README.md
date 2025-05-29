@@ -1,48 +1,36 @@
-#Jogo do Milhão 
+##Jogo do Milhão
+
+## Participantes:
+
+    Érika Fernanda Santos De Souza R.A.: 2478382
+
+    Mayane Rye Aomoto Loaoka R.A.: 2270862
+
+    Amani Moreira Das Neves   R.A.: 2270633
+
+## Como fazer o programa rodar: 
+
+    (Colocar como fazer o programa rodar)
+
+    A biblioteca funcoes.h é onde estão as funções utilidas para o menu funcionar
+
+    (O arquivo teste1.c é apenas o arquivo original com as funções de cadastro, sem a parte de arquivos)
 
 
 
----
-## Para configuarar os pré requisitos da biblioteca 
+## Parte criativa:
 
-### No Linux
-Instale as dependencias para as bibliotecas de video e audio
-```
-sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libwayland-dev libxkbcommon-dev
-```
+    Sistema de Pontuação com Bônus: Um sistema de pontuação que não apenas conte as respostas corretas, mas também recompense a velocidade e a estratégia. Por exemplo, responder corretamente em um tempo curto poderia dar um bônus de pontos, ou usar as ajudas estrategicamente poderia resultar em uma pontuação extra. Isso adiciona uma camada extra de 
+    competição e estratégia ao jogo.
 
-### No windows 
-utilize o compilador MinGW-w64 (64 bits)
-```
-https://github.com/skeeto/w64devkit/releases/download/v2.0.0/w64devkit-x64-2.0.0.exe
-```
+    Sistema de dicas:
+    -Elimina metade das respostas
+    -Pula uma questão
+    -A pessoa perde 1 ponto a cada ajuda utilizada
+    -Recebe uma dica
 
 
-## Para compilar utilize:
 
-### No Windows
-```
-mingw32-make
-```
-### No Linux
-```
-make
-```
 
-### Para executar utilize:
 
-### No Windows
-```
-mingw32-make run
-```
-### No Linux
-```
-make run
-```
-
-## Caso queira compilar manualmente, sem makefile, utilize:
-```
-## Para compilar seu programa utilize
-```
-gcc seuJogo.c -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -o seuJogo
 ```
