@@ -45,7 +45,7 @@ Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPerguntas)//retor
         nova.nivel_dificuldade = 3;//caso de erro ele entra no nivel 3 
 
     }
-    printf("Digite a nova dica a ser adicionada: \n (no maximo 100 caracteres)");
+    printf("Digite a nova dica a ser adicionada: \n (no maximo 200 caracteres)");
     leString(nova.dica,sizeof(nova.dica));
 
     perguntasDoJogo  = realloc(perguntasDoJogo, (*totalPerguntas + 1) * sizeof(Pergunta));
@@ -146,7 +146,7 @@ Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPerguntas)
         printf("Nivel de dificuldade invalido. Mantido o nivel anterior ou 3 (MEDIO) se nao houver.\n");
         perguntasDoJogo[indiceAlterado - 1].nivel_dificuldade = 3;
     }
-    printf("Digite a Nova dica: \n(No maximo 100 caracteres)");
+    printf("Digite a Nova dica: \n(No maximo 200 caracteres)");
     leString(perguntasDoJogo[indiceAlterado - 1].dica,sizeof(perguntasDoJogo[indiceAlterado-1].dica));
    
 
@@ -236,120 +236,164 @@ Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas) // tota
         return perguntasDoJogo;
     }//fecha else
 }
-int random(Pergunta* perguntasDoJogo, int* totalPerguntas,  int level){
-    int i;
-    do{
-    i = rand() % *totalPerguntas;
-    }while(perguntasDoJogo[i].nivel_dificuldade != level);
-    return i;
-}//mani q fez e tava dando erro no pc dela
-Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)//mani q fez e deu erro no pc dela
+int random(Pergunta* perguntasDoJogo, int totalPerguntas,  int level, int* perguntasUsadas, int numPerguntasUsadas){
+    if (totalPerguntas == 0) {
+        return -1; // Não há perguntas cadastradas
+    }
+
+
+    int *indicesNivel = (int*)malloc(totalPerguntas * sizeof(int));
+    int countNivel = 0;
+
+    if (indicesNivel == NULL) {
+        perror("Erro ao alocar memoria para indices de nivel");
+       exit(1); 
+    }
+
+
+    for (int i = 0; i < totalPerguntas; i++) {
+        if (perguntasDoJogo[i].nivel_dificuldade == level) {
+          
+            int usada = 0;
+            for (int j = 0; j < numPerguntasUsadas; j++) {
+                if (perguntasUsadas[j] == i) {
+                    usada = 1;
+                    break;
+                }
+            }
+            if (!usada) {
+                indicesNivel[countNivel++] = i;
+            }
+        }
+    }
+
+    if (countNivel == 0) {
+        free(indicesNivel);
+        return -1; // Nenhuma pergunta disponível para este nível (ou todas já foram usadas)
+    }
+
+
+    int indiceSorteadoNaLista = rand() % countNivel;
+    int indiceRealDaPergunta = indicesNivel[indiceSorteadoNaLista];
+
+    free(indicesNivel);
+    return indiceRealDaPergunta;
+}
+Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
 {
     int i = 0;
     int condicao;
-    int level = 0;
+    int level = MUITOFACIL;
+    int pontuacao = 0;
+    int acertos = 0;
+    int errou= 0;
     char resp;
+    char needdica[10];
+    int indicePerguntaAtual;
+    int *perguntaUsada;
+    int numPerguntasUsadas = 0;
 
     if (totalPerguntas == 0)
     {
         printf("Nenhuma pergunta cadastrada para jogar.\n");
         return perguntasDoJogo;
     }
-    do{
-        level++;
-        switch (level){
-            case MUITOFACIL: 
-                i = random(perguntasDoJogo, totalPerguntas, level);
-                printf("%s", perguntasDoJogo[i].enunciado);  
-                for (int j = 0; j<4; j++){
-                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
-                }
-                printf("Escolha a alternativa correta: ");
-                scanf("%c",&resp);
+    perguntaUsada = (int*)malloc(totalPerguntas * sizeof(int));
+    if (perguntaUsada == NULL) {
+        perror("Erro ao alocar memoria para controle de perguntas usadas");
+        return perguntasDoJogo; // Retorna em caso de erro grave
+    }
 
-                if(resp != perguntasDoJogo[i].alternativa_correta){
-                    level = 0;
-                    printf("Voce errou, vamos voltar uma dificuldade!");
-                }
-                printf("Voce acertou, parabens! Proxima pergunta:\n");
+      while (level <= MUITODIFICIL && acertos < NIVEIS_DO_JOGO && !errou) {
+        printf("\n--- Nivel de Dificuldade: %d (%s) ---\n", level, // Usar 'level' para exibir o nível
+               (level == MUITOFACIL ? "MUITO FACIL" :
+                level == FACIL ? "FACIL" :
+                level == MEDIO ? "MEDIO" :
+                level == DIFICIL ? "DIFICIL" : "MUITO DIFICIL"));
 
-            break;
+       
+            
+        indicePerguntaAtual = random(perguntasDoJogo, &totalPerguntas, level, perguntaUsada, numPerguntasUsadas); // Passar totalPerguntas por endereço para random
 
-            case FACIL: 
-                i = random(perguntasDoJogo, totalPerguntas, level);
-                printf("%s", perguntasDoJogo[i].enunciado);  
-                for (int j = 0; j<4; j++){
-                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
-                }
-                printf("Escolha a alternativa correta: ");
-                scanf("%c",&resp);
-
-                if(resp != perguntasDoJogo[i].alternativa_correta){
-                    level = 0;
-                    printf("Voce errou, vamos voltar uma dificuldade!");
-                }
-                printf("Voce acertou, parabens! Proxima pergunta:\n");
-
-
-            break;
-
-            case MEDIO: 
-                i = random(perguntasDoJogo, totalPerguntas, level);
-                printf("%s", perguntasDoJogo[i].enunciado);  
-                for (int j = 0; j<4; j++){
-                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
-                }
-                printf("Escolha a alternativa correta: ");
-                scanf("%c",&resp);
-
-                if(resp != perguntasDoJogo[i].alternativa_correta){
-                    level = 1;
-                    printf("Voce errou, vamos voltar uma dificuldade!");
-                }
-                printf("Voce acertou, parabens! Proxima pergunta:\n");
-
-            break;
-
-            case DIFICIL: 
-                i = random(perguntasDoJogo, totalPerguntas, level);
-                printf("%s", perguntasDoJogo[i].enunciado);  
-                for (int j = 0; j<4; j++){
-                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
-                }
-                printf("Escolha a alternativa correta: ");
-                scanf("%c",&resp);
-
-                if(resp != perguntasDoJogo[i].alternativa_correta){
-                    level = 2;
-                    printf("Voce errou, vamos voltar uma dificuldade!");
-                }
-                printf("Voce acertou, parabens! Proxima pergunta:\n");
-
-            break;
-
-            case MUITODIFICIL: 
-                i = random(perguntasDoJogo, totalPerguntas, level);
-                printf("%s", perguntasDoJogo[i].enunciado);  
-                for (int j = 0; j<4; j++){
-                    printf("%s", perguntasDoJogo[i].alternativa_escrita);
-                }
-                printf("Escolha a alternativa correta: ");
-                scanf("%c",&resp);
-
-                if(resp != perguntasDoJogo[i].alternativa_correta){
-                    level = 3;
-                    printf("Voce errou, vamos voltar uma dificuldade!");
-                }
-                printf("Voce acertou, parabens! Agora voce eh um milionario!\n");
-
-                condicao = 1;
-            break;
-
+        if (indicePerguntaAtual == -1) {
+            printf("Nao ha mais perguntas disponiveis para o nivel %d. Jogo encerrado.\n", level);
+            break; // Sai do loop principal se não há mais perguntas no nível atual
         }
-    }while(condicao == 0);
+    }
+
+        // Adiciona o índice da pergunta sorteada à lista de perguntas já usadas para evitar repetição.
+        perguntaUsada[numPerguntasUsadas++] = indicePerguntaAtual;
+        int respostaRecebida = 0;
+        
+       do {
+            printf("Escolha a alternativa correta (A, B, C, D) ou digite 'dica' para usar uma dica: ");
+            leString(needdica, sizeof(needdica)); 
+
+            if (strcasecmp(needdica, "dica") == 0) //compra dica
+                {
+                    pontuacao -= CUSTO_DICA_VALOR;
+                    printf("\n--- DICA:\n%s\n", perguntasDoJogo[indicePerguntaAtual].dica);
+                    printf("Pontuacao atual: %d. Digite sua resposta (A, B, C, D): ", pontuacao);
+                    leString(resp, sizeof(resp)); 
+                } else 
+                {
+                    printf("Pontos insuficientes para usar a dica! Pontuacao atual: %d. Digite sua resposta (A, B, C, D): ", pontuacao);
+                    leString(resp, sizeof(resp));
+                }
+                
+                
+                if (strlen(needdica) == 1 && (toupper(needdica[0]) >= 'A' && toupper(needdica[0]) <= 'D')) 
+                {
+                    resp = toupper(needdica[0]); 
+                    respostaRecebida = 1; 
+                } else 
+                {
+                    printf("Entrada invalida. Por favor, digite A, B, C, D ou 'dica'.\n");
+                }
+            } while (!respostaRecebida); 
+
+       
+        if (resp == perguntasDoJogo[indicePerguntaAtual].alternativa_correta) {
+            printf("\nVOCE ACERTOU! Parabens!\n");
+            
+            switch (level) { 
+                case MUITOFACIL:    pontuacao += PONTOS_BASE_MUITOFACIL; break;
+                case FACIL:         pontuacao += PONTOS_BASE_FACIL;      break;
+                case MEDIO:         pontuacao += PONTOS_BASE_MEDIO;      break;
+                case DIFICIL:       pontuacao += PONTOS_BASE_DIFICIL;    break;
+                case MUITODIFICIL:  pontuacao += PONTOS_BASE_MUITODIFICIL; break;
+                default: break;
+            }
+            printf("Pontuacao atual: %d\n", pontuacao);
+            acertos++;
+            level++; 
+        } else {
+            printf("\nVOCE ERROU! A alternativa correta era: %c\n", perguntasDoJogo[indicePerguntaAtual].alternativa_correta);
+            errou = 1;
+    }
+
+   
+    if (acertos >= NIVEIS_DO_JOGO) { // Se acertou o número necessário de perguntas
+   
+        printf("PARABENS! VOCE E UM MILIONARIO !!!\n");
+        printf("Pontuacao final: %d\n", pontuacao);
+      
+    } else if (errou) {
     
-    return perguntasDoJogo;
-}
+        printf("QUE PENA! VOCE PERDEU O JOGO.\n");
+        printf("Sua pontuacao final foi: %d\n", pontuacao);
+        printf("Tente novamente!\n");
+   
+    } else {
+       
+        printf("\nJogo encerrado antes de completar todos os niveis devido a falta de perguntas ou outro motivo.\n");
+        printf("Pontuacao final: %d\n", pontuacao);
+    }
+
+    free(perguntaUsada);
+    return perguntasDoJogo; 
+};
+
   
 
 Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
@@ -517,7 +561,7 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }
 
-    Pergunta* perguntas = (Pergunta*) malloc(contador_lido * sizeof(Pergunta));
+    Pergunta* perguntas = (Pergunta*) malloc(contador_lido*sizeof(Pergunta));
 
     if (perguntas == NULL) {
 
@@ -546,38 +590,41 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
 
 } // carregarPerguntasBinario
 
+
 void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, int total_perguntas) {
-
-    FILE *arquivo = fopen(nome_arquivo, "wb"); // "wb" cria ou sobrescreve
-
-    if (arquivo == NULL) {
-
+    FILE *arquivo = fopen("nome_arquivo", "wb"); // "wb" cria ou sobrescreve
+    
+    if(arquivo == NULL)
+    {
+        
         perror("Erro ao abrir o arquivo binario para salvar as perguntas");
         return;
-    }
-
+    }//if
+    
     // Escreve o número total de perguntas
     if (fwrite(&total_perguntas, sizeof(int), 1, arquivo) != 1) {
-
+        
         perror("Erro ao escrever o total de perguntas no arquivo binario");
         fclose(arquivo);
-
+        
         return;
-    }
-
+    }//if
+    
     // Escreve todas as estruturas Pergunta se houver alguma
     if (total_perguntas > 0) {
-
+        
         if (fwrite(perguntas, sizeof(Pergunta), total_perguntas, arquivo) != total_perguntas) {
-
+            
             perror("Erro ao escrever as perguntas no arquivo binario");
             fclose(arquivo);
-
+            
             return;
-        }
-    }
-
+        }//if
+    }//if
+    
     fclose(arquivo);
     printf("Perguntas salvas com sucesso em '%s' (formato binario).\n", nome_arquivo);
-
-} // salvarPerguntasBinario
+    
+}
+// salvarPerguntasBinario
+    
