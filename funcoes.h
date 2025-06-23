@@ -12,10 +12,15 @@ typedef struct {
     char alternativa_escrita[4][21];///sao 4 opçoes e cada opçao tem 21 caracteres
     char alternativa_correta;
     Dificuldade nivel_dificuldade;
+    char dica [200];
 
     
 }Pergunta;// Estrutura de Pergunta
 
+const int NIVEIS_DO_JOGO = 5;//total de niveis do jogo
+
+typedef enum {PONTOS_BASE_MUITOFACIL = 100,PONTOS_BASE_FACIL = 200, PONTOS_BASE_MEDIO = 300,PONTOS_BASE_DIFICIL  = 400,PONTOS_BASE_MUITODIFICIL = 500,CUSTO_DICA_VALOR = 50}ValoresPontuacao;
+//adicionei um enum pra pontuacao e valor da dica
  Pergunta* inserirPergunta(Pergunta* perguntasDoJogo, int* totalPerguntas);
  void listaPerguntas(Pergunta perguntas[], int totalPerguntasCad);
  Pergunta* alteraPergunta(Pergunta* perguntasDoJogo, int* totalPerguntas);
