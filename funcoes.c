@@ -281,82 +281,157 @@ int random(Pergunta* perguntasDoJogo, int totalPerguntas,  int level, int* pergu
 }
 Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
 {
-    int i = 0;
-    int condicao;
-    int level = MUITOFACIL;
+    int level = MUITOFACIL; // Começa no nível Muito Fácil (1)
     int pontuacao = 0;
-    int acertos = 0;
-    int errou= 0;
-    char resp;
-    char needdica[10];
-    int indicePerguntaAtual;
-    int *perguntaUsada;
-    int numPerguntasUsadas = 0;
+    char respChar; // Para a resposta do usuário (A, B, C, D)
+    char acaoUsuario[10]; // Buffer para ler dica ,50/50, pular ou a resposta digitada
+    int indicePerguntaAtual; // Índice da pergunta sorteada 
+    int numPerguntasAcertadas = 0; // Contador de perguntas acertadas 
+    int errou = 0; //indicar que o jogador errou e perdeu o jogo
+    int *perguntasJaUsadas = NULL; // Guarda os indices de perguntas ja usadas
+    int numPerguntasUsadas = 0; // Contador de perguntas já usadas
+
+    
 
     if (totalPerguntas == 0)
     {
-        printf("Nenhuma pergunta cadastrada para jogar.\n");
+        printf("Nenhuma pergunta cadastrada para jogar. Cadastre perguntas primeiro.\n");
         return perguntasDoJogo;
     }
-    perguntaUsada = (int*)malloc(totalPerguntas * sizeof(int));
-    if (perguntaUsada == NULL) {
+    //pra evitar q repita perguntas
+
+    perguntasJaUsadas = (int*)malloc(totalPerguntas * sizeof(int));
+    if (perguntasJaUsadas == NULL) {
         perror("Erro ao alocar memoria para controle de perguntas usadas");
         return perguntasDoJogo; // Retorna em caso de erro grave
     }
 
-      while (level <= MUITODIFICIL && acertos < NIVEIS_DO_JOGO && !errou) {
-        printf("\n--- Nivel de Dificuldade: %d (%s) ---\n", level, // Usar 'level' para exibir o nível
+    printf("\nQUEM QUER SER UM MILIONARIO?!\n");
+    printf("Acerte %d perguntas para se tornar um milionario!\n", NIVEIS_DO_JOGO); 
+    printf("Custo das ajudas (dica/50-50/pular): %d pontos.\n", CUSTO_DICA_VALOR);
+    printf("Pontuacao inicial: %d\n", pontuacao);
+
+   //loop pra enquanto n atingir dificuldade maxima o acertar o tanto necessario de perguntas
+  
+    while (level <= MUITODIFICIL && numPerguntasAcertadas < NIVEIS_DO_JOGO && !errou) {
+        printf("\n--- Nivel de Dificuldade: %d (%s) ---\n", level,
                (level == MUITOFACIL ? "MUITO FACIL" :
                 level == FACIL ? "FACIL" :
                 level == MEDIO ? "MEDIO" :
-                level == DIFICIL ? "DIFICIL" : "MUITO DIFICIL"));
+                level == DIFICIL ? "DIFICIL" : "MUITODIFICIL"));
 
-       
-            
-        indicePerguntaAtual = random(perguntasDoJogo, &totalPerguntas, level, perguntaUsada, numPerguntasUsadas); // Passar totalPerguntas por endereço para random
+        // Sorteia uma pergunta do nível atual
+        indicePerguntaAtual = random(perguntasDoJogo, totalPerguntas, level, perguntasJaUsadas, numPerguntasUsadas);
 
         if (indicePerguntaAtual == -1) {
             printf("Nao ha mais perguntas disponiveis para o nivel %d. Jogo encerrado.\n", level);
-            break; // Sai do loop principal se não há mais perguntas no nível atual
+            break; // Sai do loop principal se não tem mais perguntas no nível atual
         }
-    }
 
-        // Adiciona o índice da pergunta sorteada à lista de perguntas já usadas para evitar repetição.
-        perguntaUsada[numPerguntasUsadas++] = indicePerguntaAtual;
-        int respostaRecebida = 0;
-        
-       do {
-            printf("Escolha a alternativa correta (A, B, C, D) ou digite 'dica' para usar uma dica: ");
-            leString(needdica, sizeof(needdica)); 
+        // Adiciona o índice da pergunta sorteada à lista de perguntas já usadas para evitar repetição
+        perguntasJaUsadas[numPerguntasUsadas++] = indicePerguntaAtual;
 
-            if (strcasecmp(needdica, "dica") == 0) //compra dica
-                {
-                    pontuacao -= CUSTO_DICA_VALOR;
-                    printf("\n--- DICA:\n%s\n", perguntasDoJogo[indicePerguntaAtual].dica);
-                    printf("Pontuacao atual: %d. Digite sua resposta (A, B, C, D): ", pontuacao);
-                    leString(resp, sizeof(resp)); 
-                } else 
-                {
-                    printf("Pontos insuficientes para usar a dica! Pontuacao atual: %d. Digite sua resposta (A, B, C, D): ", pontuacao);
-                    leString(resp, sizeof(resp));
-                }
-                
-                
-                if (strlen(needdica) == 1 && (toupper(needdica[0]) >= 'A' && toupper(needdica[0]) <= 'D')) 
-                {
-                    resp = toupper(needdica[0]); 
-                    respostaRecebida = 1; 
-                } else 
-                {
-                    printf("Entrada invalida. Por favor, digite A, B, C, D ou 'dica'.\n");
-                }
-            } while (!respostaRecebida); 
+        int respostaValidaRecebida = 0; // ver se o jogador tento responder
+        do {
+            printf("\nPergunta:\n%s\n", perguntasDoJogo[indicePerguntaAtual].enunciado);
+            // Exibir alternativas originais
+            for (int j = 0; j < 4; j++) {
+                printf("  %c) %s\n", 'A' + j, perguntasDoJogo[indicePerguntaAtual].alternativa_escrita[j]);
+            }
 
-       
-        if (resp == perguntasDoJogo[indicePerguntaAtual].alternativa_correta) {
-            printf("\nVOCE ACERTOU! Parabens!\n");
+            printf("Pontuacao atual: %d\n", pontuacao);
+            printf("Escolha sua acao: (A, B, C, D para responder) | 'dica' | '50/50' | 'pular': ");
+            leString(acaoUsuario, sizeof(acaoUsuario)); // Lê a ação
+
             
-            switch (level) { 
+            if (strcasecmp(acaoUsuario, "dica") == 0) {
+                if (pontuacao >= CUSTO_DICA_VALOR) {
+                    pontuacao -= CUSTO_DICA_VALOR;
+                    printf("\nDICA:\n%s\n", perguntasDoJogo[indicePerguntaAtual].dica);
+                    printf("Pontuacao atual: %d. Responda ou escolha outra acao.\n", pontuacao);
+                } else {
+                    printf("Pontos insuficientes para usar a dica! Pontuacao atual: %d.\n", pontuacao);
+                }
+            } else if (strcasecmp(acaoUsuario, "50/50") == 0) {
+                if (pontuacao >= CUSTO_DICA_VALOR) {
+                    pontuacao -= CUSTO_DICA_VALOR;
+                    printf("\nDuas alternativas incorretas foram eliminadas.\n");
+                    
+                    // Identifica a alternativa correta
+                    char correta = perguntasDoJogo[indicePerguntaAtual].alternativa_correta;
+                    
+                    // Armazenar as alternativas para exibir sem as eliminadas
+                    char altsParaExibir[4][21]; // Copia das alternativas
+                    int posCorreta = correta - 'A';
+                    
+                    // Copia todas as alternativas inicialmente
+                    for(int j=0; j<4; j++){
+                        strcpy(altsParaExibir[j], perguntasDoJogo[indicePerguntaAtual].alternativa_escrita[j]);
+                    }
+
+                    // Encontra e "elimina" duas alternativas incorretas
+                    int eliminadasCount = 0;
+                    int alternativasIndice[4] = {0, 1, 2, 3}; // A, B, C, D
+                    
+                    // Embaralha os índices para escolher aleatoriamente quais eliminar
+                    for(int j=0; j<4; j++){
+                        int r = rand() % 4;
+                        int temp = alternativasIndice[j];
+                        alternativasIndice[j] = alternativasIndice[r];
+                        alternativasIndice[r] = temp;
+                    }
+
+                    for(int j=0; j<4 && eliminadasCount < 2; j++){
+                        int indiceAleatorio = alternativasIndice[j]; // Pega um índice aleatório
+                        if (('A' + indiceAleatorio) != correta) { // Se não for a correta
+                            strcpy(altsParaExibir[indiceAleatorio], "(ELIMINADA)"); // Marca como eliminada
+                            eliminadasCount++;
+                        }
+                    }
+
+                    // Exibe as alternativas com as eliminadas marcadas
+                    for(int j=0; j<4; j++){
+                        printf("  %c) %s\n", 'A' + j, altsParaExibir[j]);
+                    }
+                    printf("Pontuacao atual: %d. Responda ou escolha outra acao.\n", pontuacao);
+                } else {
+                    printf("Pontos insuficientes para usar a dica 50/50! Pontuacao atual: %d.\n", pontuacao);
+                }
+            } else if (strcasecmp(acaoUsuario, "pular") == 0) {
+                if (pontuacao >= CUSTO_DICA_VALOR) { // Pular também tem custo
+                    pontuacao -= CUSTO_DICA_VALOR;
+                    printf("\n--- QUESTAO PULADA! ---\n");
+                    printf("Passando para a proxima pergunta. Pontuacao atual: %d.\n", pontuacao);
+                    // Avança o nível e considera como um "acerto" para progressão, mas sem ganhar pontos
+                    numPerguntasAcertadas++;
+                    level++;
+                    respostaValidaRecebida = 1; // Sai do loop de ação
+                    break; // Sai do do-while da pergunta atual e vai para a próxima iteração do while principal
+                } else {
+                    printf("Pontos insuficientes para pular a questao! Pontuacao atual: %d.\n", pontuacao);
+                }
+            } else { // Se não foi uma dica, assume que é uma tentativa de resposta (A, B, C, D)
+                if (strlen(acaoUsuario) == 1 && (toupper(acaoUsuario[0]) >= 'A' && toupper(acaoUsuario[0]) <= 'D')) {
+                    respChar = toupper(acaoUsuario[0]);
+                    respostaValidaRecebida = 1; 
+                } else {
+                    printf("Entrada invalida. Por favor, digite A, B, C, D, 'dica', '50/50' ou 'pular'.\n");
+                }
+            }
+        } while (!respostaValidaRecebida); // Repete até que uma resposta válida seja dada ou a pergunta seja pulada
+
+  
+     
+        if (strcasecmp(acaoUsuario, "pular") == 0) {
+             continue; //avança level
+        }
+
+
+        // Verifica se a resposta está correta
+        if (respChar == perguntasDoJogo[indicePerguntaAtual].alternativa_correta) {
+            printf("\nVOCE ACERTOU! Parabens!\n");
+            // Adiciona pontos com base no nível, usando os valores do enum
+            switch (level) {
                 case MUITOFACIL:    pontuacao += PONTOS_BASE_MUITOFACIL; break;
                 case FACIL:         pontuacao += PONTOS_BASE_FACIL;      break;
                 case MEDIO:         pontuacao += PONTOS_BASE_MEDIO;      break;
@@ -365,34 +440,34 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
                 default: break;
             }
             printf("Pontuacao atual: %d\n", pontuacao);
-            acertos++;
-            level++; 
+            numPerguntasAcertadas++;
+            level++; // Avança para o próximo nível de dificuldade
         } else {
             printf("\nVOCE ERROU! A alternativa correta era: %c\n", perguntasDoJogo[indicePerguntaAtual].alternativa_correta);
-            errou = 1;
+            errou = 1; // Define se perdeu
+        }
     }
 
-   
-    if (acertos >= NIVEIS_DO_JOGO) { // Se acertou o número necessário de perguntas
-   
-        printf("PARABENS! VOCE E UM MILIONARIO !!!\n");
+    // Mensagem final do jogo
+    if (numPerguntasAcertadas >= NIVEIS_DO_JOGO) {
+        
+        printf("PARABENS! VOCE SE TORNOU UM MILIONARIO!\n");
         printf("Pontuacao final: %d\n", pontuacao);
-      
+       
     } else if (errou) {
-    
+       
         printf("QUE PENA! VOCE PERDEU O JOGO.\n");
         printf("Sua pontuacao final foi: %d\n", pontuacao);
         printf("Tente novamente!\n");
-   
+        
     } else {
-       
-        printf("\nJogo encerrado antes de completar todos os niveis devido a falta de perguntas ou outro motivo.\n");
-        printf("Pontuacao final: %d\n", pontuacao);
+        printf("\nJogo encerrado antes de completar todos os niveis. Pontuacao final: %d\n", pontuacao);
     }
 
-    free(perguntaUsada);
-    return perguntasDoJogo; 
-};
+    free(perguntasJaUsadas);
+    return perguntasDoJogo;
+}
+
 
   
 
