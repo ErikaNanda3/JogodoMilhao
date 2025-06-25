@@ -362,7 +362,7 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
                     
                     // Armazenar as alternativas para exibir sem as eliminadas
                     char altsParaExibir[4][21]; // Copia das alternativas
-                    
+                   
                     
                     // Copia todas as alternativas inicialmente
                     for(int j=0; j<4; j++){
