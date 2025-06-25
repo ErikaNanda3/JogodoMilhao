@@ -236,11 +236,15 @@ Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas) // tota
         return perguntasDoJogo;
     }//fecha else
 }
-int random(Pergunta* perguntasDoJogo, int totalPerguntas,  int level, int* perguntasUsadas, int numPerguntasUsadas){
+int random(Pergunta* perguntasDoJogo, int totalPerguntas, int level, int* perguntasUsadas, int numPerguntasUsadas){
     if (totalPerguntas == 0) {
         return -1; // Não há perguntas cadastradas
     }
-
+    if (perguntasDoJogo == NULL)
+    {
+        return -1;
+    }
+    
 
     int *indicesNivel = (int*)malloc(totalPerguntas * sizeof(int));
     int countNivel = 0;
@@ -256,7 +260,7 @@ int random(Pergunta* perguntasDoJogo, int totalPerguntas,  int level, int* pergu
           
             int usada = 0;
             for (int j = 0; j < numPerguntasUsadas; j++) {
-                if (perguntasUsadas[j] == i) {
+                if (perguntasUsadas[j] == (int)i) {
                     usada = 1;
                     break;
                 }
@@ -509,7 +513,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
            
             capacidade_atual += 50; // Aumenta a capacidade em 50 perguntas
            
-            Pergunta* temporario = (Pergunta*) realloc(perguntas, capacidade_atual * sizeof(Pergunta));
+            Pergunta* temporario = (Pergunta*) realloc(perguntas,(unsigned int)capacidade_atual * sizeof(Pergunta));
           
             if (temporario == NULL) {
                
