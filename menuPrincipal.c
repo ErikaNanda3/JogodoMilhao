@@ -14,6 +14,7 @@ diminuir dinamicamente*/
 
 int main(){
     int opcao;
+    srand(time(NULL));
 
     Pergunta* perguntasDoJogo = NULL;
     int totalPergunta = 0;//contador de perguntas
