@@ -163,8 +163,8 @@ Pergunta* pesquisarPergunta(Pergunta* perguntasDoJogo, int totalPerguntas)
         return perguntasDoJogo;
     }
 
-    printf("Digite o enunciado da pergunta que deseja pesquisar: ");
     char pesquisa[200];
+    printf("Digite o enunciado da pergunta que deseja pesquisar: ");
     leString(pesquisa, sizeof(pesquisa));
 
     for (int i = 0; i < totalPerguntas; i++)
@@ -504,7 +504,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }// fecha if
 
-    linha[strcspn(linha, "\n")] = 0; // Remove o '\n' do cabeçalho também, por boa prática
+    linha[strcspn(linha, "\n")] = 0; // Remove o '\n' do cabeçalho 
 
     while (fgets(linha, sizeof(linha), arquivo) != NULL) {
    
@@ -528,7 +528,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
             perguntas = temporario;
         }
 
-        // Parsing da linha CSV: enunciado, 4 alternativas, correta, dificuldade
+        // análise da linha CSV: enunciado, 4 alternativas, correta, dificuldade,dica
         char *token;
         char *linha_copy = strdup(linha); // Duplica a linha para strtok (que modifica a string)
         
@@ -563,7 +563,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
             perguntas[contador].alternativa_correta = '\0'; // Campo vazio ou inválido
         }
 
-        // 4. Nível de Dificuldade (último campo)
+        // 4. Nível de Dificuldade 
         token = strtok(NULL, "\n"); // Delimita pelo '\n' para pegar o final da linha
         
         if (token) {
@@ -587,9 +587,24 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
             fprintf(stderr, "Aviso: Nivel de dificuldade ausente na linha %d. Usando PADRAO (%d).\n", contador + 2, MEDIO);
         }
         
+        // 5. Dica
+        token = strtok(NULL, "\n"); // Pega a dica até o final da linha
+        
+        if (token) {
+        
+            strncpy(perguntas[contador].dica, token, sizeof(perguntas[contador].dica) - 1);
+            perguntas[contador].dica[sizeof(perguntas[contador].dica) - 1] = '\0';
+        
+        } else {
+        
+            perguntas[contador].dica[0] = '\0'; // Campo vazio ou inválido
+        }
+
+
         free(linha_copy); // Libera a memória alocada por strdup
 
         contador++;
+
     }// while
 
     fclose(arquivo);
