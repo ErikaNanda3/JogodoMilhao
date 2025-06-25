@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "funcoes.h"
+#include <time.h>
 
 #define NOME_ARQUIVO_BINARIO "questoes_milhao.bin"
 #define NOME_ARQUIVO_CSV "questoesdoJogoDoMilhao.csv"

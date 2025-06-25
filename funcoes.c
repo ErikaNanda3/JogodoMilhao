@@ -4,6 +4,7 @@
 #include <ctype.h> // Para usar toupper
 #include "funcoes.h"
 
+const int NIVEIS_DO_JOGO = 5; // Total de níveis do jogo
 
 void leString(char texto[], int tam)
 {
@@ -256,7 +257,7 @@ int random(Pergunta* perguntasDoJogo, int totalPerguntas, int level, int* pergun
 
 
     for (int i = 0; i < totalPerguntas; i++) {
-        if (perguntasDoJogo[i].nivel_dificuldade == level) {
+        if ((int)perguntasDoJogo[i].nivel_dificuldade == level) {
           
             int usada = 0;
             for (int j = 0; j < numPerguntasUsadas; j++) {
@@ -610,7 +611,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
 
 Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
     
-    int contador_lido = 0;
+    size_t contador_lido = 0;
     
     FILE *arquivo = fopen(nome_arquivo, "rb");
    
@@ -640,7 +641,7 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }
 
-    Pergunta* perguntas = (Pergunta*) malloc(contador_lido*sizeof(Pergunta));
+    Pergunta* perguntas = (Pergunta*) malloc(contador_lido * sizeof(Pergunta));
 
     if (perguntas == NULL) {
 
@@ -652,6 +653,7 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }
 
+    //size_t contador_lido;
     if (fread(perguntas, sizeof(Pergunta), contador_lido, arquivo) != contador_lido) {
        
         perror("Erro ao ler as perguntas do arquivo binario (dados incompletos ou corrompidos)");
@@ -670,8 +672,14 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
 } // carregarPerguntasBinario
 
 
-void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, int total_perguntas) {
-    FILE *arquivo = fopen("nome_arquivo", "wb"); // "wb" cria ou sobrescreve
+void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, size_t total_perguntas) {
+    if (total_perguntas == 0 || perguntas == NULL) {
+        
+        printf("Nenhuma pergunta para salvar no arquivo binario.\n");
+        return;
+    }
+
+    FILE *arquivo = fopen(nome_arquivo, "wb"); // "wb" cria ou sobrescreve
     
     if(arquivo == NULL)
     {
@@ -692,6 +700,7 @@ void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, int total_p
     // Escreve todas as estruturas Pergunta se houver alguma
     if (total_perguntas > 0) {
         
+        //size_t total_perguntas;
         if (fwrite(perguntas, sizeof(Pergunta), total_perguntas, arquivo) != total_perguntas) {
             
             perror("Erro ao escrever as perguntas no arquivo binario");
