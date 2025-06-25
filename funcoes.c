@@ -668,7 +668,6 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }
 
-    //size_t contador_lido;
     if (fread(perguntas, sizeof(Pergunta), contador_lido, arquivo) != contador_lido) {
        
         perror("Erro ao ler as perguntas do arquivo binario (dados incompletos ou corrompidos)");
