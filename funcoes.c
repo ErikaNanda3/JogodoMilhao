@@ -314,7 +314,6 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
 
     printf("\nQUEM QUER SER UM MILIONARIO?!\n");
     printf("Acerte %d perguntas para se tornar um milionario!\n", NIVEIS_DO_JOGO);  
-    printf("Acerte %d perguntas para se tornar um milionario!\n", NIVEIS_DO_JOGO); 
     printf("Custo das ajudas (dica/50-50/pular): %d pontos.\n", CUSTO_DICA_VALOR);
 
     printf("Pontuacao inicial: %d\n", pontuacao);
