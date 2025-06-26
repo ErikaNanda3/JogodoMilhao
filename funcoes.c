@@ -688,7 +688,7 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
 } // carregarPerguntasBinario
 
 
-void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, int total_perguntas) {
+void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, size_t  total_perguntas) {
     FILE *arquivo = fopen(nome_arquivo, "wb"); // "wb" cria ou sobrescreve
     
     if(arquivo == NULL)
