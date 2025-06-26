@@ -237,14 +237,15 @@ Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas) // tota
         return perguntasDoJogo;
     }//fecha else
 }
-int random(Pergunta* perguntasDoJogo, int totalPerguntas, int level, int* perguntasUsadas, int numPerguntasUsadas){
+int randomizer(Pergunta* perguntasDoJogo, int totalPerguntas, int level, int* perguntasUsadas, int numPerguntasUsadas){
     if (totalPerguntas == 0) {
         return -1; // Não há perguntas cadastradas
     }
-    if (perguntasDoJogo == NULL)
-    {
+    if (perguntasDoJogo == NULL) {
+        printf("Perguntas no jogo ta NULL no randomizer\n"); // Debugging
         return -1;
     }
+
     
 
     int *indicesNivel = (int*)malloc(totalPerguntas * sizeof(int));
@@ -312,8 +313,10 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
     }
 
     printf("\nQUEM QUER SER UM MILIONARIO?!\n");
+    printf("Acerte %d perguntas para se tornar um milionario!\n", NIVEIS_DO_JOGO);  
     printf("Acerte %d perguntas para se tornar um milionario!\n", NIVEIS_DO_JOGO); 
     printf("Custo das ajudas (dica/50-50/pular): %d pontos.\n", CUSTO_DICA_VALOR);
+
     printf("Pontuacao inicial: %d\n", pontuacao);
 
    //loop pra enquanto n atingir dificuldade maxima o acertar o tanto necessario de perguntas
@@ -686,13 +689,7 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
 } // carregarPerguntasBinario
 
 
-void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, size_t total_perguntas) {
-    if (total_perguntas == 0 || perguntas == NULL) {
-        
-        printf("Nenhuma pergunta para salvar no arquivo binario.\n");
-        return;
-    }
-
+void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, size_t  total_perguntas) {
     FILE *arquivo = fopen(nome_arquivo, "wb"); // "wb" cria ou sobrescreve
     
     if(arquivo == NULL)
