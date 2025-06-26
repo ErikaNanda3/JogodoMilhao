@@ -22,7 +22,7 @@ int main(){
     
     // 1. Carregar as perguntas do arquivo CSV primeiro
     printf("Tentando carregar perguntas do arquivo CSV: '%s'...\n", NOME_ARQUIVO_CSV);
-    perguntasDoJogo = carregarPerguntasDoCSV(NOME_ARQUIVO_CSV, &totalPergunta);
+    perguntasDoJogo = carregarArquivoCSV(NOME_ARQUIVO_CSV, &totalPergunta);
 
     // Verifica se o carregamento do CSV falhou ou se o arquivo estava vazio
     if (perguntasDoJogo == NULL || totalPergunta == 0) {

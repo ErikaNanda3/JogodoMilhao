@@ -27,7 +27,7 @@ typedef enum {PONTOS_BASE_MUITOFACIL = 100,PONTOS_BASE_FACIL = 200, PONTOS_BASE_
  Pergunta* pesquisarPergunta(Pergunta* perguntasDoJogo, int totalPerguntas);
  Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas);
  Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas);
- Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas);
+ Pergunta* carregarArquivoCSV(char* nome_arquivo, int* total_perguntas);
  void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, size_t total_perguntas);
  Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas);
  int random(Pergunta* perguntasDoJogo, int totalPerguntas,  int level, int* perguntasUsadas, int numPerguntasUsadas);

@@ -476,7 +476,7 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
 
   
 
-Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
+Pergunta* carregarArqivoCSV(char* nome_arquivo, int* total_perguntas) {
    
     FILE *arquivo = fopen("questoesjogodomilhao.csv", "r");
    
