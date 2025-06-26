@@ -4,6 +4,7 @@
 #include <ctype.h> // Para usar toupper
 #include "funcoes.h"
 
+const int NIVEIS_DO_JOGO = 5; // Total de níveis do jogo
 
 void leString(char texto[], int tam)
 {
@@ -162,8 +163,8 @@ Pergunta* pesquisarPergunta(Pergunta* perguntasDoJogo, int totalPerguntas)
         return perguntasDoJogo;
     }
 
-    printf("Digite o enunciado da pergunta que deseja pesquisar: ");
     char pesquisa[200];
+    printf("Digite o enunciado da pergunta que deseja pesquisar: ");
     leString(pesquisa, sizeof(pesquisa));
 
     for (int i = 0; i < totalPerguntas; i++)
@@ -256,7 +257,7 @@ int random(Pergunta* perguntasDoJogo, int totalPerguntas, int level, int* pergun
 
 
     for (int i = 0; i < totalPerguntas; i++) {
-        if (perguntasDoJogo[i].nivel_dificuldade == level) {
+        if ((int)perguntasDoJogo[i].nivel_dificuldade == level) {
           
             int usada = 0;
             for (int j = 0; j < numPerguntasUsadas; j++) {
@@ -479,7 +480,7 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
 
 Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
    
-    FILE *arquivo = fopen(nome_arquivo, "r");
+    FILE *arquivo = fopen("questoesjogodomilhao.csv", "r");
    
     if (arquivo == NULL) {
    
@@ -505,7 +506,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }// fecha if
 
-    linha[strcspn(linha, "\n")] = 0; // Remove o '\n' do cabeçalho também, por boa prática
+    linha[strcspn(linha, "\n")] = 0; // Remove o '\n' do cabeçalho 
 
     while (fgets(linha, sizeof(linha), arquivo) != NULL) {
    
@@ -529,7 +530,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
             perguntas = temporario;
         }
 
-        // Parsing da linha CSV: enunciado, 4 alternativas, correta, dificuldade
+        // análise da linha CSV: enunciado, 4 alternativas, correta, dificuldade,dica
         char *token;
         char *linha_copy = strdup(linha); // Duplica a linha para strtok (que modifica a string)
         
@@ -564,7 +565,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
             perguntas[contador].alternativa_correta = '\0'; // Campo vazio ou inválido
         }
 
-        // 4. Nível de Dificuldade (último campo)
+        // 4. Nível de Dificuldade 
         token = strtok(NULL, "\n"); // Delimita pelo '\n' para pegar o final da linha
         
         if (token) {
@@ -588,9 +589,24 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
             fprintf(stderr, "Aviso: Nivel de dificuldade ausente na linha %d. Usando PADRAO (%d).\n", contador + 2, MEDIO);
         }
         
+        // 5. Dica
+        token = strtok(NULL, "\n"); // Pega a dica até o final da linha
+        
+        if (token) {
+        
+            strncpy(perguntas[contador].dica, token, sizeof(perguntas[contador].dica) - 1);
+            perguntas[contador].dica[sizeof(perguntas[contador].dica) - 1] = '\0';
+        
+        } else {
+        
+            perguntas[contador].dica[0] = '\0'; // Campo vazio ou inválido
+        }
+
+
         free(linha_copy); // Libera a memória alocada por strdup
 
         contador++;
+
     }// while
 
     fclose(arquivo);
@@ -612,7 +628,7 @@ Pergunta* carregarPerguntasDoCSV(char* nome_arquivo, int* total_perguntas) {
 
 Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
     
-    int contador_lido = 0;
+    size_t contador_lido = 0;
     
     FILE *arquivo = fopen(nome_arquivo, "rb");
    
@@ -642,7 +658,7 @@ Pergunta* carregarPerguntasBinario(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }
 
-    Pergunta* perguntas = (Pergunta*) malloc(contador_lido*sizeof(Pergunta));
+    Pergunta* perguntas = (Pergunta*) malloc(contador_lido * sizeof(Pergunta));
 
     if (perguntas == NULL) {
 
@@ -694,6 +710,7 @@ void salvarPerguntasBinario(char* nome_arquivo, Pergunta* perguntas, int total_p
     // Escreve todas as estruturas Pergunta se houver alguma
     if (total_perguntas > 0) {
         
+        //size_t total_perguntas;
         if (fwrite(perguntas, sizeof(Pergunta), total_perguntas, arquivo) != total_perguntas) {
             
             perror("Erro ao escrever as perguntas no arquivo binario");

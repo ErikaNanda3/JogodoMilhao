@@ -5,7 +5,7 @@ else
   OS := $(strip $(shell uname))
 endif
 
-BINNAME = hello
+BINNAME = menuPrincipal
 
 ifeq ($(OS),Windows_NT)
 	INCLUDE = -I./include/ -L./libwin

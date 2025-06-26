@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "funcoes.h"
+#include <time.h>
 
 #define NOME_ARQUIVO_BINARIO "questoes_milhao.bin"
-#define NOME_ARQUIVO_CSV "questoesdoJogoDoMilhao.csv"
+#define NOME_ARQUIVO_CSV "questoesjogodomilhao.csv"
 
 /*Para gerenciar uma coleção de perguntas para o jogo, defina uma estrutura Pergunta
 contendo, no mínimo: enunciado (texto), 4 alternativas (texto), letra da alternativa
