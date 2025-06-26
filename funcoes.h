@@ -9,7 +9,7 @@ typedef enum {MUITOFACIL = 1, FACIL, MEDIO, DIFICIL, MUITODIFICIL}Dificuldade;
 typedef struct {
 
     char enunciado[512];
-    char alternativa_escrita[4][21];///sao 4 opçoes e cada opçao tem 21 caracteres
+    char alternativa_escrita[4][100];///sao 4 opçoes e cada opçao tem 100 caracteres
     char alternativa_correta;
     Dificuldade nivel_dificuldade;
     char dica [200];
