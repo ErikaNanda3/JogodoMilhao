@@ -1,7 +1,6 @@
 
 main: menuprincipal.o funcoes.o
 	@echo "Gerando arquivo executavel"
-	# Comando para linkar os objetos e criar o executável
 	gcc menuprincipal.o funcoes.o -o main
 
 
