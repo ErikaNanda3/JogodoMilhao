@@ -329,7 +329,7 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
                 level == DIFICIL ? "DIFICIL" : "MUITODIFICIL"));
 
         // Sorteia uma pergunta do nível atual
-        indicePerguntaAtual = random(perguntasDoJogo, totalPerguntas, level, perguntasJaUsadas, numPerguntasUsadas);
+        indicePerguntaAtual = randomizer(perguntasDoJogo, totalPerguntas, level, perguntasJaUsadas, numPerguntasUsadas);
 
         if (indicePerguntaAtual == -1) {
             printf("Nao ha mais perguntas disponiveis para o nivel %d. Jogo encerrado.\n", level);
@@ -540,7 +540,7 @@ void salvaJogoemCSV(Pergunta* perguntasDoJogo, int totalPerguntas, const char* n
 } // salvaJogoemCSV
   
 
-Pergunta* carregarArqivoCSV(char* nome_arquivo, int* total_perguntas) {
+Pergunta* carregarArquivoCSV(char* nome_arquivo, int* total_perguntas) {
    
     FILE *arquivo = fopen("questoesjogodomilhao.csv", "r");
    
