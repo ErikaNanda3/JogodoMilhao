@@ -552,7 +552,7 @@ Pergunta* carregarArquivoCSV(char* nome_arquivo, int* total_perguntas) {
         return NULL;
     }
 
-    char linha[1024]; // Buffer para ler cada linha do CSV
+    char linha[2025]; // Buffer para ler cada linha do CSV
     int contador = 0;
     int capacidade_atual = 0;
    
@@ -642,13 +642,13 @@ Pergunta* carregarArquivoCSV(char* nome_arquivo, int* total_perguntas) {
 
                 perguntas[contador].nivel_dificuldade = MEDIO; // Padrão se o nível for inválido
                
-                fprintf(stderr, "Aviso: Nivel de dificuldade invalido '%s' na linha %d. Usando PADRAO (%d).\n", token, contador + 2, MEDIO);
+                fprintf(stderr, "Aviso: Nivel medio de dificuldade invalido '%s' na linha %d. Usando PADRAO (%d).\n", token, contador + 2, MEDIO);
             }
         } else {
 
             perguntas[contador].nivel_dificuldade = MEDIO; // Padrão se o token estiver faltando
            
-            fprintf(stderr, "Aviso: Nivel de dificuldade ausente na linha %d. Usando PADRAO (%d).\n", contador + 2, MEDIO);
+            fprintf(stderr, "Aviso: Nivel medio de dificuldade ausente na linha %d. Usando PADRAO (%d).\n", contador + 2, MEDIO);
         }
         
         // 5. Dica
