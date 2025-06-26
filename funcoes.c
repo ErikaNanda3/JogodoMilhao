@@ -353,10 +353,14 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
             leString(acaoUsuario, sizeof(acaoUsuario)); // Lê a ação
 
             if (strcasecmp(acaoUsuario, "dica") == 0) {
+               
                 if (pontuacao >= CUSTO_DICA_VALOR) {
                     pontuacao -= CUSTO_DICA_VALOR;
                     printf("\nDICA:\n%s\n", perguntasDoJogo[indicePerguntaAtual].dica);
                     printf("Pontuacao atual: %d. Responda ou escolha outra acao.\n", pontuacao);
+                    printf("Pressione ENTER para continuar com a mesma pergunta.\n");
+                    setbuf(stdin,NULL);
+                    getchar();
                 }//if 
                 else 
                 {
