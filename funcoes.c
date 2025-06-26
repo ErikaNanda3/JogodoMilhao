@@ -329,7 +329,7 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
                 level == DIFICIL ? "DIFICIL" : "MUITODIFICIL"));
 
         // Sorteia uma pergunta do nível atual
-        indicePerguntaAtual = random(perguntasDoJogo, totalPerguntas, level, perguntasJaUsadas, numPerguntasUsadas);
+        indicePerguntaAtual = randomizer(perguntasDoJogo, totalPerguntas, level, perguntasJaUsadas, numPerguntasUsadas);
 
         if (indicePerguntaAtual == -1) {
             printf("Nao ha mais perguntas disponiveis para o nivel %d. Jogo encerrado.\n", level);
