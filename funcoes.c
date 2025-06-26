@@ -476,7 +476,32 @@ Pergunta* jogar(Pergunta* perguntasDoJogo, int totalPerguntas)
     return perguntasDoJogo;
 }
 
+void salvaJogoemCSV(Pergunta* perguntasDoJogo, int totalPerguntas, const char* nomeArquivo) {
+    
+    FILE* arquivo = fopen(nomeArquivo, "w");
+    
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo para salvar o jogo");
+        return;
+    }
 
+    fprintf(arquivo, "Enunciado;Alternativa A;Alternativa B;Alternativa C;Alternativa D;Alternativa Correta;Nivel de Dificuldade;Dica\n");
+
+    for (int i = 0; i < totalPerguntas; i++) {
+        fprintf(arquivo, "%s;%s;%s;%s;%s;%c;%d;%s\n",
+                perguntasDoJogo[i].enunciado,
+                perguntasDoJogo[i].alternativa_escrita[0],
+                perguntasDoJogo[i].alternativa_escrita[1],
+                perguntasDoJogo[i].alternativa_escrita[2],
+                perguntasDoJogo[i].alternativa_escrita[3],
+                perguntasDoJogo[i].alternativa_correta,
+                perguntasDoJogo[i].nivel_dificuldade,
+                perguntasDoJogo[i].dica);
+    }
+
+    fclose(arquivo);
+    printf("Jogo salvo com sucesso em '%s'.\n", nomeArquivo);
+} // salvaJogoemCSV
   
 
 Pergunta* carregarArqivoCSV(char* nome_arquivo, int* total_perguntas) {
