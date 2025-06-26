@@ -81,6 +81,15 @@ int main(){
             printf("Boa sorte!\n");
             jogar(perguntasDoJogo,totalPergunta);
             break;
+        case 7:
+            printf("Carregando dados para um arquivo CSV(modo texto)...\n");
+           
+            perguntasDoJogo = carregarArquivoCSV(NOME_ARQUIVO_CSV, &totalPergunta);
+            if (perguntasDoJogo == NULL) {
+                printf("Erro ao carregar perguntas do arquivo CSV.\n");
+            } else {
+                printf("Perguntas carregadas com sucesso do arquivo CSV.\n");
+            }    
         case 0:
             printf("Saindo do Jogo...\n");
             salvarPerguntasBinario(NOME_ARQUIVO_BINARIO, perguntasDoJogo, totalPergunta);
