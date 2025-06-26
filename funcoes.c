@@ -237,14 +237,15 @@ Pergunta* excluirPergunta(Pergunta* perguntasDoJogo, int* totalPeguntas) // tota
         return perguntasDoJogo;
     }//fecha else
 }
-int random(Pergunta* perguntasDoJogo, int totalPerguntas, int level, int* perguntasUsadas, int numPerguntasUsadas){
+int randomizer(Pergunta* perguntasDoJogo, int totalPerguntas, int level, int* perguntasUsadas, int numPerguntasUsadas){
     if (totalPerguntas == 0) {
         return -1; // Não há perguntas cadastradas
     }
-    if (perguntasDoJogo == NULL)
-    {
+    if (perguntasDoJogo == NULL) {
+        printf("Perguntas no jogo ta NULL no randomizer\n"); // Debugging
         return -1;
     }
+
     
 
     int *indicesNivel = (int*)malloc(totalPerguntas * sizeof(int));
