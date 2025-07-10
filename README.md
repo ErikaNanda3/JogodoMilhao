@@ -6,7 +6,7 @@
 
     Mayane Rye Aomoto Ioaoka R.A.: 2270862
 
-    Amani Moreira Das Neves  R.A.: 2270633
+
 
 ## Como fazer o programa rodar: 
 
